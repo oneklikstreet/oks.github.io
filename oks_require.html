@@ -9,10 +9,11 @@
     <body>
         <h1>My Sample Project</h1>
         <script>
-            console.log("we are 1");
             require(["channel"], function(channel) {
                 console.log("we are 1");
-                channel.openChannel();
+                var open = function () {
+                    channel.openChannel();
+                };
 
             }
             );
