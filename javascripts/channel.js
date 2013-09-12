@@ -1,4 +1,4 @@
-define ( [],  function () {
+define ( ["underscore"],  function (_) {
 
     var socket;
     var processMessage;
@@ -16,6 +16,9 @@ define ( [],  function () {
     var socketRecv = function(msg) {
             console.log('socketRecv Server: ' + msg.data);
             //processSignalingMessage(msg.data);
+            if((_.isNull(processMessage) || _.isUndefined(processMessage)))
+                console.log('socketRecv ' + 'Null processMessage');
+                return;
             processMessage(msg.data);
         }
 
