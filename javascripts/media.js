@@ -20,7 +20,7 @@ define ( ["constraints", "webrtc"], function(constraints, webrtc) {
               console.log("getUserMedia failed with exception: " + e.message);
 
               msg = " Error: The camera/microphone might not work on this browser as it lacks full HTML5 support. Please download and use the most secure and fastest browser: Google Chrome." ;
-              call_events( msg + e.message);
+              //call_events( msg + e.message);
               alert(msg);
 
             }

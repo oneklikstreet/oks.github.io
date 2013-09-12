@@ -77,7 +77,7 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             pc.setLocalDescription(sessionDescription);
         },
         createPeerConnection: function(stream) {
-            this.stream_check(stream);
+            stream_check(stream);
             console.log("got both video and camera.");
             console.log("User has granted access to local media.");
             attachMediaStream(testVideo, stream);
