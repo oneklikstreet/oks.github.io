@@ -1,28 +1,32 @@
 define ( ["underscore"],  function (_) {
 
     var socket;
-    var processMessage;
-    var socketOpen = function() {
+    var processMessage = null;
+    socketOpen = function() {
             socket.active = 1;
             console.log('socketOpen ' + 'web socket connection is successful\n');
             //video_call();
         }
 
-    var socketError = function(err) {
+    socketError = function(err) {
             socket.active = 0;
             console.log('socketError '+ 'web socket connection error'+err);
         }
 
-    var socketRecv = function(msg) {
+    socketRecv = function(msg) {
             console.log('socketRecv Server: ' + msg.data);
             //processSignalingMessage(msg.data);
-            if((_.isNull(processMessage) || _.isUndefined(processMessage)))
+            try {
+            if((_.isUndefined(this.processMessage) || _.isNull(this.processMessage)))
                 console.log('socketRecv ' + 'Null processMessage');
                 return;
-            processMessage(msg.data);
+            this.processMessage(msg.data);
+            } catch (e) {
+                console.log(e);
+            }
         }
 
-    var socketClose = function(msg) {
+    socketClose = function(msg) {
             socket.active = 0;
             console.log('socketClose ' + 'web socket is disconnected ' + msg);
         }
@@ -32,7 +36,7 @@ define ( ["underscore"],  function (_) {
             console.log('openChannel ' + 'Opening channel.');
             socket = new WebSocket('ws://119.81.19.90:8000/join_conf/', ['soap', 'xmpp', 'sip']);
             socket.binaryType = 'arraybuffer';
-            processMessage = processMsg;
+            this.processMessage = processMsg;
             socket.onopen = socketOpen;
             socket.onclose = socketClose;
             socket.onerror = socketError;
