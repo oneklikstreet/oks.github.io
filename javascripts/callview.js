@@ -6,7 +6,7 @@ define(["backbone", "underscore"], function (Backbone, _) {
             this.listenTo(this.model, 'VIDEO',  this.video);
             this.listenTo(this.model, 'AUDIO',  this.audio);
             this.listenTo(this.model, 'AUDIENCE',  this.audience);
-            this.listenTo(this.model, 'CALLSTART',  this.start_call);
+            this.listenTo(this.model, 'CALLSTART',  this.createPeerConnection);
         },
         video : function (call_state){
             if(call_state == IDLE) {

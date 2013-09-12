@@ -9,7 +9,7 @@
     <body>
         <h1>My Sample Project</h1>
         <script>
-            require(["channel"], function(channel) {
+            require(["channel","call"], function(channel, call) {
                 console.log("step 1");
                 var page = {};
                 initialize = function() {
@@ -22,6 +22,7 @@
                     console.log("step 2");
                     channel.openChannel(null);
                 };
+                initialize();
                 open();
             });
         </script>

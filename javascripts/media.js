@@ -1,4 +1,4 @@
-define ( ["constraints"], function(constraints) {
+define ( ["constraints", "webrtc"], function(constraints, webrtc) {
 
     var function onUserMediaError(error) {
         console.log("Failed to get access to local media. Error code was " + error.code);
@@ -8,7 +8,6 @@ define ( ["constraints"], function(constraints) {
 
     return {
         do_get_user_media: function (call_type, onUserMediaSuccess) {
-
             // Call into getUserMedia via the polyfill (adapter.js).
             try {
               getUserMedia({'audio':true, 'video':constraints[call_type]}, onUserMediaSuccess,
@@ -18,7 +17,6 @@ define ( ["constraints"], function(constraints) {
             } catch (e) {
               console.log("getUserMedia() failed. Is this a WebRTC capable browser?");
               console.log("getUserMedia failed with exception: " + e.message);
-              arrow.style.display = "none";
 
               msg = " Error: The camera/microphone might not work on this browser as it lacks full HTML5 support. Please download and use the most secure and fastest browser: Google Chrome." ;
               call_events( msg + e.message);
