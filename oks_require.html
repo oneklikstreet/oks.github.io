@@ -11,14 +11,19 @@
         <script>
             require(["channel"], function(channel) {
                 console.log("step 1");
-                var open = function () {
+                var page = {};
+                initialize = function() {
+                    console.log("initialize loaded");
+                    page.localVideo = document.getElementById("selfView");
+                    page.remoteVideo = document.getElementById("remoteView");
+                };
+                
+                open = function () {
                     console.log("step 2");
                     channel.openChannel(null);
                 };
                 open();
-
-            }
-            );
+            });
         </script>
     </body>
 </html>
