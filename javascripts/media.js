@@ -1,6 +1,6 @@
 define ( ["constraints", "webrtc"], function(constraints, webrtc) {
 
-    var function onUserMediaError(error) {
+    onUserMediaError = function(error) {
         console.log("Failed to get access to local media. Error code was " + error.code);
         call_events("Failed to get access to local media. Error code was " + error.code);
         alert(" Error: Failed to get access to Camera/Mic. Error code was " + error.code + ".");
