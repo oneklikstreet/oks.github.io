@@ -4,6 +4,7 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
     CallView = Backbone.View.extend({
 
         initialize: function() {
+            that = this;
             console.log('reached here');
             this.listenTo(this.model, 'VIDEO',  this.video);
             this.listenTo(this.model, 'AUDIO',  this.audio);
@@ -77,7 +78,7 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             pc.setLocalDescription(sessionDescription);
         },
         createPeerConnection: function(stream) {
-            this.stream_check(stream);
+            that.stream_check(stream);
             console.log("got both video and camera.");
             console.log("User has granted access to local media.");
             attachMediaStream(testVideo, stream);
