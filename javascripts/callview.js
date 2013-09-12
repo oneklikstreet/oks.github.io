@@ -9,7 +9,7 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             this.listenTo(this.model, 'AUDIO',  this.audio);
             this.listenTo(this.model, 'AUDIENCE',  this.audience);
             this.listenTo(this.model, 'CALLSTART',  this.createPeerConnection);
-        },
+        }, 
         video : function (call_state){
             if(call_state == IDLE) {
                 mode = VIDEO;
@@ -33,12 +33,12 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             var audio_tracks = stream.getAudioTracks();
             if(audio_tracks === ""){
                 msg = "failed to get mic";
-                call_events(msg);
+                //call_events(msg);
                 alert(msg);
             }
             if(video_tracks === "" && mode === VIDEO) {
                 msg = "failed to get camera";
-                call_events(msg);
+                //call_events(msg);
                 alert(msg);
             }
         },
@@ -77,7 +77,7 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             pc.setLocalDescription(sessionDescription);
         },
         createPeerConnection: function(stream) {
-            stream_check(stream);
+            this.stream_check(stream);
             console.log("got both video and camera.");
             console.log("User has granted access to local media.");
             attachMediaStream(testVideo, stream);
