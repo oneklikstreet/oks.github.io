@@ -1567,5 +1567,4 @@
       model.trigger('error', model, resp, options);
     };
   };
-
 }).call(this);

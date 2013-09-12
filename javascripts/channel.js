@@ -22,7 +22,7 @@ define ( ["underscore"],  function (_) {
                 return;
             this.processMessage(msg.data);
             } catch (e) {
-                console.log(e);
+                console.log(e.message);
             }
         }
 

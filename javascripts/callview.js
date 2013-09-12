@@ -1,8 +1,10 @@
-define(["backbone", "underscore"], function (Backbone, _) {
+define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
 
+    Backbone.$ = $;
     CallView = Backbone.View.extend({
-        
+
         initialize: function() {
+            console.log('reached here');
             this.listenTo(this.model, 'VIDEO',  this.video);
             this.listenTo(this.model, 'AUDIO',  this.audio);
             this.listenTo(this.model, 'AUDIENCE',  this.audience);
@@ -102,4 +104,5 @@ define(["backbone", "underscore"], function (Backbone, _) {
         }
 
     });
+
 });

@@ -2,15 +2,16 @@ define ( ["constraints", "webrtc"], function(constraints, webrtc) {
 
     onUserMediaError = function(error) {
         console.log("Failed to get access to local media. Error code was " + error.code);
-        call_events("Failed to get access to local media. Error code was " + error.code);
+        //call_events("Failed to get access to local media. Error code was " + error.code);
         alert(" Error: Failed to get access to Camera/Mic. Error code was " + error.code + ".");
-    }
+    };
 
     return {
         do_get_user_media: function (call_type, onUserMediaSuccess) {
+          console.log(webrtc);
             // Call into getUserMedia via the polyfill (adapter.js).
             try {
-              getUserMedia({'audio':true, 'video':constraints[call_type]}, onUserMediaSuccess,
+              webrtc.getUserMedia({'audio':true, 'video':constraints[call_type]}, onUserMediaSuccess,
                            onUserMediaError);
               console.log("Requested access to local media with mediaConstraints:\n" +
                           "  \"" + JSON.stringify(constraints[call_type]) + "\"");

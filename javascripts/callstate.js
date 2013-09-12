@@ -1,6 +1,6 @@
-define (["underscore", "backbone"], function(_, Backbone){
+define (["underscore", "backbone"], function(underscore, backbone ){
 
-    console.log(_.random(0, 100));
+    //console.log(_.random(0, 100));
 
     var IDLE = 0;
     var OFFER_MADE = 1;
