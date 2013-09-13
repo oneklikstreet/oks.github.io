@@ -10,6 +10,8 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             this.listenTo(this.model, 'AUDIO',  this.audio);
             this.listenTo(this.model, 'AUDIENCE',  this.audience);
             this.listenTo(this.model, 'CALLSTART',  this.createPeerConnection);
+            this.localvideo = document.getgetElementById("localvideo");
+            this.remotevideo = document.getgetElementById("remotevideo");
         }, 
         video : function (call_state){
             if(call_state == IDLE) {
@@ -48,12 +50,12 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             console.log("call connected.");
             call_events("call connected.");
             helptag.style.display = "none";
-            attachMediaStream(remoteVideo1, event.stream);
-            remoteVideo2.src = remoteVideo1.src;
-            remoteVideo3.src = remoteVideo1.src;
-            remoteVideo4.src = remoteVideo1.src;
-            active1.src = remoteVideo1.src;
-            console.log(remoteVideo1.src);
+            attachMediaStream(that.remotevideo, event.stream);
+            //remoteVideo2.src = remoteVideo1.src;
+            //remoteVideo3.src = remoteVideo1.src;
+            //remoteVideo4.src = remoteVideo1.src;
+            //active1.src = remoteVideo1.src;
+            //console.log(remoteVideo1.src);
             remoteStream = event.stream;
         },
         onRemoteStreamRemoved: function(event) {
@@ -81,8 +83,7 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             that.stream_check(stream);
             console.log("got both video and camera.");
             console.log("User has granted access to local media.");
-            attachMediaStream(testVideo, stream);
-            attachMediaStream(activeself, stream);
+            attachMediaStream(that.localvideo, stream);
             localStream = stream;
             setStatus("Connecting...");
             console.log("Creating PeerConnection.");
