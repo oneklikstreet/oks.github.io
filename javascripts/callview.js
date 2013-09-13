@@ -10,8 +10,8 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             this.listenTo(this.model, 'AUDIO',  this.audio);
             this.listenTo(this.model, 'AUDIENCE',  this.audience);
             this.listenTo(this.model, 'CALLSTART',  this.createPeerConnection);
-            this.localvideo = document.getgetElementById("localvideo");
-            this.remotevideo = document.getgetElementById("remotevideo");
+            this.localvideo = document.getElementById("localvideo");
+            this.remotevideo = document.getElementById("remotevideo");
         }, 
         video : function (call_state){
             if(call_state == IDLE) {
