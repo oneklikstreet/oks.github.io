@@ -253,3 +253,7 @@ footer {
     color:#444;
   }
 }
+
+video#localvideo { top: 0; z-index: -1; width: 640px; height:480px ;}
+video#remotevideo {  top: 0; z-index: -1; width: 640px; height:480px ;
+
