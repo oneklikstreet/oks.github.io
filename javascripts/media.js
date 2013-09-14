@@ -14,7 +14,7 @@ define ( ["constraints", "webrtc"], function(constraints, webrtc) {
           //return;
             // Call into getUserMedia via the polyfill (adapter.js).
             try {
-              webrtc.getUserMedia({'audio':true, 'video':constraints[call_type]}, onUserMediaSuccess.createPeerConnection,
+              webrtc.getUserMedia({'audio':true, 'video':true}, onUserMediaSuccess.createPeerConnection,
                            onUserMediaError);
               console.log("Requested access to local media with mediaConstraints:\n" +
                           "  \"" + JSON.stringify(constraints[call_type]) + "\"");

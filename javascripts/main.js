@@ -11,8 +11,8 @@ require.config(
 );
 
 require([
-    "underscore", "backbone", "channel", "call"
-    ], function ( underscore, backbone, channel, call) {
+    "underscore", "backbone", "channel", "call", "signaling"
+    ], function ( underscore, backbone, channel, call, signaling) {
 
                 //console.log(_)
                 //console.log(Backbone);
@@ -22,15 +22,16 @@ require([
 
                 initialize = function() {
                     console.log("initialize loaded");
-                    page.localVideo = document.getElementById("selfView");
-                    page.remoteVideo = document.getElementById("remoteView");
                 };
                 
                 open = function () {
                     console.log("step 2");
-                    channel.openChannel(null);
+                    message_channel = channel.openChannel(signaling.processSignalingMessage);
+                    console.log(message_channel);
+                    return message_channel;
                 };
 
                 initialize();
-                open();
+                //open();
+                call.callStart(open());
 });

@@ -1,6 +1,17 @@
-define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
+define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstants"], function ($,underscore, backbone, webrtc, constraints, callconstants) {
 
     Backbone.$ = $;
+    makeid = function ()
+    {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
     CallView = Backbone.View.extend({
 
         initialize: function() {
@@ -12,6 +23,9 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             this.listenTo(this.model, 'CALLSTART',  this.createPeerConnection);
             this.localvideo = document.getElementById("localvideo");
             this.remotevideo = document.getElementById("remotevideo");
+            this.from_tag = makeid();
+            this.call_id = makeid();
+            this.conf_id = "ty1";
         }, 
         video : function (call_state){
             if(call_state == IDLE) {
@@ -48,9 +62,9 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
         onRemoteStreamAdded: function(event) {
             console.log("Remote stream added.");
             console.log("call connected.");
-            call_events("call connected.");
-            helptag.style.display = "none";
-            attachMediaStream(that.remotevideo, event.stream);
+            //call_events("call connected.");
+            //helptag.style.display = "none";
+            webrtc.attachMediaStream(that.remotevideo, event.stream);
             //remoteVideo2.src = remoteVideo1.src;
             //remoteVideo3.src = remoteVideo1.src;
             //remoteVideo4.src = remoteVideo1.src;
@@ -63,19 +77,20 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
         },
         onIceCandidate: function(event) {
             if (event.candidate) {
-                if(call_state == IDLE){
-                    call_state = OFFER_MADE;
+                if(that.model.currentState() === callconstants.FAIL){
+                    that.model.changeState(callconstants.IDLE);
+                    //console.log("What is the state here?" + that.model.currentState() + that.model + that);
                     console.log(pc.localDescription.sdp);
-                    var invite_msg = JSON.stringify({"method":"INVITE", "fromtag":from_tag, "callid":call_id, "confid":conf_id, "user-agent": "browser", "sdp":pc.localDescription.sdp});
-                    socketSend(invite_msg);
+                    var invite_msg = JSON.stringify({"method":"INVITE", "fromtag":that.from_tag, "callid":that.call_id, "confid":that.conf_id, "user-agent": "browser", "sdp":pc.localDescription.sdp});
+                    that.channel.sendMessage(invite_msg);
                 }
             } else {
               console.log("End of candidates.");
             }
         },
         sdpProcessing: function(sessionDescription){
-            sessionDescription.sdp = removeCN(sessionDescription.sdp);
-            console.log('got sdp\n'+sessionDescription.sdp);
+            //sessionDescription.sdp = removeCN(sessionDescription.sdp);
+            //console.log('got sdp\n'+sessionDescription.sdp);
             // setLocalDesciption is the one who starts the ice
             pc.setLocalDescription(sessionDescription);
         },
@@ -83,26 +98,28 @@ define(["jquery","underscore", "backbone"], function ($,underscore, backbone) {
             that.stream_check(stream);
             console.log("got both video and camera.");
             console.log("User has granted access to local media.");
-            attachMediaStream(that.localvideo, stream);
+            console.log(webrtc);
+            webrtc.attachMediaStream(that.localvideo, stream);
             localStream = stream;
-            setStatus("Connecting...");
+            console.log("Connecting...");
             console.log("Creating PeerConnection.");
+
             try {
-              pc = new RTCPeerConnection(null);
+              pc = new webkitRTCPeerConnection(null);
               console.log("Created RTCPeerConnnection \n");
             } catch (e) {
               console.log("Failed to create PeerConnection, exception: " + e.message);
-              call_events("Failed to create PeerConnection, exception: " + e.message);
+              //call_events("Failed to create PeerConnection, exception: " + e.message);
               //alert("Cannot create RTCPeerConnection object; WebRTC is not supported by this browser.");
               return;
             }
-            pc.onicecandidate = onIceCandidate;
-            pc.onaddstream = onRemoteStreamAdded;
-            pc.onremovestream = onRemoteStreamRemoved;
+            pc.onicecandidate = that.onIceCandidate;
+            pc.onaddstream = that.onRemoteStreamAdded;
+            pc.onremovestream = that.onRemoteStreamRemoved;
             console.log("Adding local stream.");
             pc.addStream(localStream);
             started = true;
-            pc.createOffer(sdpProcessing, null, sdp_constraints);
+            pc.createOffer(that.sdpProcessing, null, constraints.video);
         }
 
     });
