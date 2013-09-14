@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-</head>
-<script type="text/javascript">
-</script>
-<script src="javascripts/domready.js" type="application/javascript"></script>
-<script type="application/javascript">
-        DomReady.ready(function() {
-            alert('dom is ready');
-        });
-</script>
-</html>
+    <head>
+        <title>My Sample Project</title>
+        <div>
+            <video id="localvideo" autoplay  ></video>
+        </div>
+        <div>
+            <video id="remotevideo" autoplay  ></video>
+        </div>
+        <!-- data-main attribute tells require.js to load
+             scripts/main.js after require.js loads. -->
+        <script data-main="javascripts/main" src="javascripts/require.js"></script>
+    </head>
+    <body>
+        <h1>My Sample Project</h1>
+        <script>
 
+        </script>
+    </body>
+</html>
