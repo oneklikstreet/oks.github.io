@@ -8,7 +8,6 @@ define ( ["constraints", "webrtc"], function(constraints, webrtc) {
 
     return {
         do_get_user_media: function (call_type, onUserMediaSuccess) {
-          console.log(webrtc);
           //var stream_test = null;
           //onUserMediaSuccess.createPeerConnection(stream_test);
           //return;

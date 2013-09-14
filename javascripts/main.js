@@ -27,7 +27,7 @@ require([
                 open = function () {
                     console.log("step 2");
                     message_channel = channel.openChannel(signaling.processSignalingMessage);
-                    console.log(message_channel);
+                    //console.log(message_channel);
                     return message_channel;
                 };
 
