@@ -254,6 +254,6 @@ footer {
   }
 }
 
-video#localvideo { top: 0; z-index: -1; width: 640px; height:480px ;}
+video#localvideo { top: 0; z-index: -1; width: 160px; height:120px ;}
 video#remotevideo {  top: 0; z-index: -1; width: 640px; height:480px ;
 
