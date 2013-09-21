@@ -1,21 +1,40 @@
-define(["jquery","underscore", "backbone", "callstate", "callview", "media", "signaling"], function ($,underscore, backbone, callstate, callview, media, signaling) {
+define(["jquery","underscore", "backbone", "callstate", "callview", "media", "signaling", "channel"
+    ], 
+    function ($,underscore, backbone, callstate, callview, channel) {
 
-    return {
-        initialize : function(){
-            this.listenTo(channel, "connected");
-            this.listenTo(callstate, "IDLE");
 
-        },
-        callStart : function(channel) {
-            
-            var state = new CallState();
-            var view = new CallView ({model: state});
-            view.listenTo(channel, "message_in", signaling.processSignalingMessage);
-            view.channel = channel;
-            console.log("step 3");
-            //media.do_get_user_media("video", view);
-            state.dial("video");
-        }
+// user triggers call with "video"
+// calljs triggers callstate with "idle"
+// calljs triggers channel with "connect"
+// channel triggers calljs with "connected"
+// calljs triggers callsate with "offer"
+// callstate trigggers media with "video"
+
+    var Call = function(){
+        this.initialize.apply(this, arguments);
     };
-
+    _.extend(Call.prototype, Backbone.Events, {
+        call_channel : {},
+        call_state : {},
+        call_view : {},
+        initialize : function(channel){
+            console.log("called call init"); 
+            call_channel = channel;
+            call_state = new callstate();
+            call_view = new callview({model: call_state});
+            this.listenTo(call_channel, "message_in", this.message_handler);
+            this.listenTo(call_state, "IDLE");
+            call_channel.trigger("connect");
+        },
+        message_handler : function(message){
+            console.log("received message at call " + message);
+            var msg = JSON.parse(message);
+            console.log(msg);
+            if (msg.code == 100) {
+                console.log("server->client: registered\n");
+                call_state.dial("VIDEO");
+            };
+        }
+    });
+        return Call;
 });

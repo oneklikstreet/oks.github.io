@@ -15,7 +15,7 @@ define (["underscore", "backbone", "callconstants"], function(underscore, backbo
         // calltype : { video: 'VIDEO', audio: 'AUDIO', audience: 'AUDIENCE'},
         // callstate : { idle: 'IDLE', offer: 'OFFER_MADE', answer: 'ANSWERED', hangup: 'HANGUP'}
     
-    CallState = Backbone.Model.extend({
+    var CallState = Backbone.Model.extend({
         defaults: {
             "state": callconstants.FAIL,
             "type": callconstants.VIDEO
@@ -26,13 +26,14 @@ define (["underscore", "backbone", "callconstants"], function(underscore, backbo
         currentType: function() {
             return this.get('type');
         },
-        changeState: function(newState){
-            this.set('state', newState);
+        changeState: function(state){
+            this.set('state', state);
             this.trigger("newState");
         },
-        dial: function(callType){
-            this.set('type', callType);
-            this.trigger(calltype.video);
+        dial: function(calltype){
+            this.set('type', calltype);
+            this.trigger(calltype);
         }
     });
+    return CallState;
 });

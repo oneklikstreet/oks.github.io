@@ -9,13 +9,12 @@ require.config({
     });
 
 require([
-    "underscore", "backbone", "channel", "call", "signaling"
-    ], function ( underscore, backbone, channel, call, signaling) {
+    "underscore", "backbone", "channel", "call"
+    ], function ( underscore, backbone, channel, call) {
 
-                var message_channel = {};            
                 console.log("mainjs loaded");
-                message_channel = new channel();
-                message_channel.initialize("119.81.19.90:8000");
-                message_channel.trigger("connect");
-                call.callStart(message_channel);
+                var message_channel = new channel("119.81.19.90:8000");
+                //message_channel.initialize("119.81.19.90:8000");
+                var ourcall =  new call(message_channel);
+                //ourcall.initialize(message_channel);
 });

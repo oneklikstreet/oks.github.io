@@ -1,18 +1,17 @@
-define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstants"], function ($,underscore, backbone, webrtc, constraints, callconstants) {
+define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstants", "media"
+    ], function ($,underscore, backbone, webrtc, constraints, callconstants, media) {
 
     Backbone.$ = $;
-    makeid = function ()
-    {
+    makeid = function () {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         for( var i=0; i < 5; i++ )
             text += possible.charAt(Math.floor(Math.random() * possible.length));
-
         return text;
     }
 
-    CallView = Backbone.View.extend({
+    var CallView = Backbone.View.extend ({
 
         initialize: function() {
             that = this;
@@ -28,16 +27,12 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
             this.conf_id = "ty1";
         }, 
         video : function (call_state){
-            if(call_state == IDLE) {
-                mode = VIDEO;
-                do_get_user_media(true, this.call_view);
-            }
+            console.log("triggered video");
+            media.do_get_user_media(true, this);
         },
         voice : function (call_state){
-            if(call_state == IDLE) {
-                mode = VOICE;
-                do_get_user_media(false, this.call_view);
-            }
+            console.log("triggered voice");
+            media.do_get_user_media(false, this);
         },
         audience : function (call_state){
             if(call_state == IDLE) {
@@ -62,14 +57,7 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         onRemoteStreamAdded: function(event) {
             console.log("Remote stream added.");
             console.log("call connected.");
-            //call_events("call connected.");
-            //helptag.style.display = "none";
             webrtc.attachMediaStream(that.remotevideo, event.stream);
-            //remoteVideo2.src = remoteVideo1.src;
-            //remoteVideo3.src = remoteVideo1.src;
-            //remoteVideo4.src = remoteVideo1.src;
-            //active1.src = remoteVideo1.src;
-            //console.log(remoteVideo1.src);
             remoteStream = event.stream;
         },
         onRemoteStreamRemoved: function(event) {
@@ -123,5 +111,5 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         }
 
     });
-
+    return CallView;
 });
