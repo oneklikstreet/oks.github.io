@@ -1,17 +1,20 @@
-define(["jquery","underscore", "backbone", "callstate", "callview", "media"], function ($,underscore, backbone, callstate, callview, media) {
+define(["jquery","underscore", "backbone", "callstate", "callview", "media", "signaling"], function ($,underscore, backbone, callstate, callview, media, signaling) {
 
     return {
+        initialize : function(){
+            this.listenTo(channel, "connected");
+            this.listenTo(callstate, "IDLE");
+
+        },
         callStart : function(channel) {
-            //console.log(_.random(0, 100));
-            //  console.log($);
             
             var state = new CallState();
-            //console.log("state at creation is " + state.currentState() + state);
             var view = new CallView ({model: state});
+            view.listenTo(channel, "message_in", signaling.processSignalingMessage);
             view.channel = channel;
-            //console.log(view.channel);
             console.log("step 3");
-            media.do_get_user_media("video", view);
+            //media.do_get_user_media("video", view);
+            state.dial("video");
         }
     };
 

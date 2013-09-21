@@ -1,5 +1,4 @@
-require.config(
-    {
+require.config({
         baseUrl: "javascripts",
         paths: {
             "jquery": "jquery-1.10.2",
@@ -7,31 +6,16 @@ require.config(
             "backbone": "backbone"
         },
         locale: "en"
-    }
-);
+    });
 
 require([
     "underscore", "backbone", "channel", "call", "signaling"
     ], function ( underscore, backbone, channel, call, signaling) {
 
-                //console.log(_)
-                //console.log(Backbone);
-                //console.log(_.random(0, 100));
-                console.log("step 1");
-                var page = {};
-
-                initialize = function() {
-                    console.log("initialize loaded");
-                };
-                
-                open = function () {
-                    console.log("step 2");
-                    message_channel = channel.openChannel(signaling.processSignalingMessage);
-                    //console.log(message_channel);
-                    return message_channel;
-                };
-
-                initialize();
-                //open();
-                call.callStart(open());
+                var message_channel = {};            
+                console.log("mainjs loaded");
+                message_channel = new channel();
+                message_channel.initialize("119.81.19.90:8000");
+                message_channel.trigger("connect");
+                call.callStart(message_channel);
 });

@@ -2,6 +2,7 @@ define([], function() {
 
     return {
         processSignalingMessage : function (message) {
+            console.log("got message" + message);
             var msg = JSON.parse(message);
 
             if (msg.code == 100) {
