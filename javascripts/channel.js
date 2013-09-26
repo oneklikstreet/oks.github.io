@@ -1,10 +1,11 @@
 define ( ["underscore", "backbone", "signaling"
     ],  function (underscore, backbone, signaling) {
 
-        var Channel = function () {
-            this.initialize.apply(this, arguments);
-        };
-        _.extend(Channel.prototype, Backbone.Events, {
+        //var Channel = function () {
+        //    this.initialize.apply(this, arguments);
+        //};
+        var Channel = Object.create (Backbone.Events);
+        _.extend(Channel, Backbone.Events, {
             socket : {},
             server_address : {},
             active : 0,
@@ -13,7 +14,7 @@ define ( ["underscore", "backbone", "signaling"
                 console.log("channel is to be started are we here");
                 socket = null;
                 server_address = address;
-                this.on("connect", this.openChannel);
+                this.on("CHANNEL_CONNECT", this.openChannel);
                 this.socketRecv = _.bind(this.socketRecv, this);
                 this.socketOpen = _.bind(this.socketOpen, this);
                 this.socketError = _.bind(this.socketError, this);
@@ -29,13 +30,12 @@ define ( ["underscore", "backbone", "signaling"
             },
             socketRecv : function(message) {
                 console.log('socketRecv Server: ' + message.data);
-                //var msg = JSON.parse(message);
 
-                try {
-                    this.trigger("message_in", message.data);
-                } catch (e) {
-                    console.log(e.message);
-                }
+                //try {
+                    this.trigger("CHANNEL_RECV", message.data);
+                //} catch (e) {
+                 //   console.log(e.message);
+                //}
             },
             socketClose : function(msg) {
                 active = 0;

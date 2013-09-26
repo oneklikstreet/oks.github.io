@@ -1,6 +1,6 @@
-define(["jquery","underscore", "backbone", "callstate", "callview", "media", "signaling", "channel"
+define(["jquery","underscore", "backbone", "callstate", "callview", "media", "signaling", "channel", "callconstants"
     ], 
-    function ($,underscore, backbone, callstate, callview, channel) {
+    function ($,underscore, backbone, callstate, callview, channel, callconstants) {
 
 
 // user triggers call with "video"
@@ -22,18 +22,26 @@ define(["jquery","underscore", "backbone", "callstate", "callview", "media", "si
             call_channel = channel;
             call_state = new callstate();
             call_view = new callview({model: call_state});
-            this.listenTo(call_channel, "message_in", this.message_handler);
-            this.listenTo(call_state, "IDLE");
-            call_channel.trigger("connect");
+            this.listenTo(call_channel, "CHANNEL_RECV", this.message_handler);
+            //this.listenTo(call_state, "STATE_CHANGE");
+            this.listenTo(call_view, "VIEW_CHANGE", this.send);
+            call_channel.trigger("CHANNEL_CONNECT");
         },
         message_handler : function(message){
-            console.log("received message at call " + message);
+            //console.log("received message at call " + message);
             var msg = JSON.parse(message);
-            console.log(msg);
+            //  console.log(msg);
             if (msg.code == 100) {
                 console.log("server->client: registered\n");
-                call_state.dial("VIDEO");
-            };
+                call_state.dial(callconstants.VIDEO);
+            } else if(msg.code == 200) {
+                //console.log("server->client:" + msg.body)
+                //console.log(msg);
+                call_state.answer(msg);
+            }
+        },
+        send : function (message){
+            call_channel.sendMessage(message);
         }
     });
         return Call;

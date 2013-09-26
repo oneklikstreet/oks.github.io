@@ -15,30 +15,36 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
 
         initialize: function() {
             that = this;
+            pc = {};
             console.log('reached here');
-            this.listenTo(this.model, 'VIDEO',  this.video);
-            this.listenTo(this.model, 'AUDIO',  this.audio);
-            this.listenTo(this.model, 'AUDIENCE',  this.audience);
-            this.listenTo(this.model, 'CALLSTART',  this.createPeerConnection);
+            this.listenTo(this.model, 'IDLE',  this.get_media);
+            this.listenTo(this.model, 'ANSWERED', this.setRemote);
             this.localvideo = document.getElementById("localvideo");
             this.remotevideo = document.getElementById("remotevideo");
             this.from_tag = makeid();
             this.call_id = makeid();
             this.conf_id = "ty1";
+        },
+        get_media : function () {
+            call_type = this.model.get('type');
+            if (call_type === callconstants.VIDEO)
+                this.video();
+            if (call_type === callconstants.VOICE)
+                this.voice();
+            if (call_type === callconstants.AUDIENCE)
+                this.audience();
         }, 
-        video : function (call_state){
+        video : function (){
             console.log("triggered video");
             media.do_get_user_media(true, this);
         },
-        voice : function (call_state){
+        voice : function (){
             console.log("triggered voice");
             media.do_get_user_media(false, this);
         },
-        audience : function (call_state){
-            if(call_state == IDLE) {
-                mode = AUDIENCE;
-                do_get_user_media(false, this.call_view);
-            }
+        audience : function (){
+            console.log("triggered audience");
+            media.do_get_user_media(false, this);
         },
         stream_check: function(stream){
             var video_tracks = stream.getVideoTracks();
@@ -54,6 +60,9 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
                 alert(msg);
             }
         },
+        setRemote: function(message) {
+            pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: message.body }));
+        },    
         onRemoteStreamAdded: function(event) {
             console.log("Remote stream added.");
             console.log("call connected.");
@@ -65,12 +74,18 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         },
         onIceCandidate: function(event) {
             if (event.candidate) {
-                if(that.model.currentState() === callconstants.FAIL){
-                    that.model.changeState(callconstants.IDLE);
-                    //console.log("What is the state here?" + that.model.currentState() + that.model + that);
-                    console.log(pc.localDescription.sdp);
-                    var invite_msg = JSON.stringify({"method":"INVITE", "fromtag":that.from_tag, "callid":that.call_id, "confid":that.conf_id, "user-agent": "browser", "sdp":pc.localDescription.sdp});
-                    that.channel.sendMessage(invite_msg);
+                if(that.model.currentState() === "IDLE"){
+                    //console.log(pc.localDescription.sdp);
+                    var invite_msg = JSON.stringify({  "method": "INVITE", 
+                                                        "fromtag": that.from_tag, 
+                                                        "callid": that.call_id, 
+                                                        "confid": that.conf_id, 
+                                                        "user-agent": "browser", 
+                                                        "sdp": pc.localDescription.sdp
+                                                    });
+                    that.trigger("VIEW_CHANGE", invite_msg);
+                    that.model.changeState("OFFER_MADE");
+
                 }
             } else {
               console.log("End of candidates.");
@@ -84,29 +99,23 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         },
         createPeerConnection: function(stream) {
             that.stream_check(stream);
-            console.log("got both video and camera.");
             console.log("User has granted access to local media.");
-            console.log(webrtc);
             webrtc.attachMediaStream(that.localvideo, stream);
             localStream = stream;
-            console.log("Connecting...");
             console.log("Creating PeerConnection.");
 
             try {
-              pc = new webkitRTCPeerConnection(null);
-              console.log("Created RTCPeerConnnection \n");
+                pc = new webkitRTCPeerConnection(null);
+                console.log("Created RTCPeerConnnection \n");
             } catch (e) {
-              console.log("Failed to create PeerConnection, exception: " + e.message);
-              //call_events("Failed to create PeerConnection, exception: " + e.message);
-              //alert("Cannot create RTCPeerConnection object; WebRTC is not supported by this browser.");
-              return;
+                console.log("Failed to create PeerConnection, exception: " + e.message);
+                return;
             }
             pc.onicecandidate = that.onIceCandidate;
             pc.onaddstream = that.onRemoteStreamAdded;
             pc.onremovestream = that.onRemoteStreamRemoved;
             console.log("Adding local stream.");
             pc.addStream(localStream);
-            started = true;
             pc.createOffer(that.sdpProcessing, null, constraints.video);
         }
 
