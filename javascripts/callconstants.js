@@ -1,5 +1,4 @@
-define (["underscore", "backbone"
-    ], function(underscore, backbone ){
+define ([], function(){
 
     return {
         FAIL: -1,

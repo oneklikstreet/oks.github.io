@@ -5,6 +5,16 @@ require.config({
             "underscore": "underscore",
             "backbone": "backbone"
         },
+       shim: {
+           'backbone': {
+           //These script dependencies should be loaded before loading
+           //backbone.js
+           deps: ['underscore', 'jquery'],
+           //Once loaded, use the global 'backbone' as the
+           //module value.
+           exports: 'backbone'
+           }
+        },
         locale: "en"
     });
 
@@ -12,27 +22,24 @@ require([
     "underscore", "backbone", "channel", "call"
     ], function ( underscore, backbone, channel, call) {
 
-
-
-        var ItemModel = Backbone.Model.extend( {} );
-
-        var item1 = {};
-        item1.model = new ItemModel( {
+        var VideoModel = Backbone.Model.extend( {} );
+        var video1 = {};
+        video1.model = new VideoModel( {
           item_class : "player",
           item_id : "localvideo",
           item_play : "autoplay",
           item_control : "controls"
         } );
 
-        var item2 = {};
-        item2.model = new ItemModel( {
+        var video2 = {};
+        video2.model = new VideoModel( {
           item_class : "player",
           item_id : "remotevideo",
           item_play : "autoplay",
           item_control : "controls"
         } );
 
-        var ItemView = Backbone.View.extend( {
+        var VideoView = Backbone.View.extend( {
             tagName : 'video',
             attributes : function () {
                 return {
@@ -43,26 +50,27 @@ require([
                 };
             },
             render : function () {
-                console.log('hey the render is called!');
-                this.$el.html( "Some stuff" );
+                console.log('Let us render ' + this.model.get('item_id') );
+                this.$el.html( "Video elements" );
                 $( "#oks-container" ).append( this.el );
             }
           // attributes
         });
 
-        item1.view = new ItemView( {
-          model : item1.model
+        video1.view = new VideoView( {
+          model : video1.model
         } );
 
-        item2.view = new ItemView( {
-          model : item2.model
+        video2.view = new VideoView( {
+          model : video2.model
         } );
-        item1.view.render();
-        item2.view.render();
+        video1.view.render();
+        video2.view.render();
 
         console.log("mainjs loaded");
         var message_channel =  Object.create(channel);
         message_channel.initialize("119.81.19.90:8000");
-        var ourcall =  new call(message_channel);
+        var ourcall = Object.create(call);
+        call.initialize(message_channel);
 
 });

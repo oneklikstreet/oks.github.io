@@ -61,7 +61,9 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
             }
         },
         setRemote: function(message) {
-            pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: message.body }));
+            pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', 
+                                                                sdp: message.body })
+                                    );
         },    
         onRemoteStreamAdded: function(event) {
             console.log("Remote stream added.");

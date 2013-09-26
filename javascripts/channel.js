@@ -1,11 +1,8 @@
-define ( ["underscore", "backbone", "signaling"
-    ],  function (underscore, backbone, signaling) {
+define ( ["underscore", "backbone"
+    ],  function (underscore, backbone) {
 
-        //var Channel = function () {
-        //    this.initialize.apply(this, arguments);
-        //};
         var Channel = Object.create (Backbone.Events);
-        _.extend(Channel, Backbone.Events, {
+        _.extend(Channel, {
             socket : {},
             server_address : {},
             active : 0,

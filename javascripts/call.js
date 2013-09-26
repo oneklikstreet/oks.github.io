@@ -1,6 +1,6 @@
-define(["jquery","underscore", "backbone", "callstate", "callview", "media", "signaling", "channel", "callconstants"
+define(["underscore", "backbone","callstate", "callview", "channel", "callconstants"
     ], 
-    function ($,underscore, backbone, callstate, callview, channel, callconstants) {
+    function (underscore, backbone, callstate, callview, channel, callconstants) {
 
 
 // user triggers call with "video"
@@ -10,10 +10,8 @@ define(["jquery","underscore", "backbone", "callstate", "callview", "media", "si
 // calljs triggers callsate with "offer"
 // callstate trigggers media with "video"
 
-    var Call = function(){
-        this.initialize.apply(this, arguments);
-    };
-    _.extend(Call.prototype, Backbone.Events, {
+    var Call = Object.create (Backbone.Events);   
+    _.extend(Call,  {
         call_channel : {},
         call_state : {},
         call_view : {},
@@ -23,7 +21,6 @@ define(["jquery","underscore", "backbone", "callstate", "callview", "media", "si
             call_state = new callstate();
             call_view = new callview({model: call_state});
             this.listenTo(call_channel, "CHANNEL_RECV", this.message_handler);
-            //this.listenTo(call_state, "STATE_CHANGE");
             this.listenTo(call_view, "VIEW_CHANGE", this.send);
             call_channel.trigger("CHANNEL_CONNECT");
         },
@@ -44,5 +41,5 @@ define(["jquery","underscore", "backbone", "callstate", "callview", "media", "si
             call_channel.sendMessage(message);
         }
     });
-        return Call;
+    return Call;
 });
