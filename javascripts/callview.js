@@ -19,8 +19,8 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
             console.log('reached here');
             this.listenTo(this.model, 'IDLE',  this.get_media);
             this.listenTo(this.model, 'ANSWERED', this.setRemote);
-            this.localvideo = document.getElementById("localvideo");
-            this.remotevideo = document.getElementById("remotevideo");
+            this.localvideo = document.getElementById("localvideo") || null;
+            this.remotevideo = document.getElementById("remotevideo") || null;
             this.from_tag = makeid();
             this.call_id = makeid();
             this.conf_id = "ty1";
@@ -102,7 +102,8 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         createPeerConnection: function(stream) {
             that.stream_check(stream);
             console.log("User has granted access to local media.");
-            webrtc.attachMediaStream(that.localvideo, stream);
+            if (that.localvideo !== null)
+                webrtc.attachMediaStream(that.localvideo, stream);
             localStream = stream;
             console.log("Creating PeerConnection.");
 

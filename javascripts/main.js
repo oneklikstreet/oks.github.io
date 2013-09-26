@@ -23,20 +23,20 @@ require([
     ], function ( underscore, backbone, channel, call) {
 
         var VideoModel = Backbone.Model.extend( {} );
-        var video1 = {};
-        video1.model = new VideoModel( {
+        var localvideo = {};
+        localvideo.model = new VideoModel( {
           item_class : "player",
           item_id : "localvideo",
           item_play : "autoplay",
-          item_control : "controls"
+          //item_control : "controls"
         } );
 
-        var video2 = {};
-        video2.model = new VideoModel( {
+        var remotevideo = {};
+        remotevideo.model = new VideoModel( {
           item_class : "player",
           item_id : "remotevideo",
           item_play : "autoplay",
-          item_control : "controls"
+          //item_control : "controls"
         } );
 
         var VideoView = Backbone.View.extend( {
@@ -57,15 +57,15 @@ require([
           // attributes
         });
 
-        video1.view = new VideoView( {
-          model : video1.model
+        localvideo.view = new VideoView( {
+          model : localvideo.model
         } );
 
-        video2.view = new VideoView( {
-          model : video2.model
+        remotevideo.view = new VideoView( {
+          model : remotevideo.model
         } );
-        video1.view.render();
-        video2.view.render();
+        //localvideo.view.render();
+        remotevideo.view.render();
 
         console.log("mainjs loaded");
         var message_channel =  Object.create(channel);
