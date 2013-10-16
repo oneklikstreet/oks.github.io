@@ -1,5 +1,5 @@
-define ( ["underscore", "backbone"
-    ],  function (underscore, backbone) {
+define (["underscore", "backbone"],
+        function (underscore, backbone){
 
         var Channel = Object.create (Backbone.Events);
         _.extend(Channel, {
@@ -8,7 +8,6 @@ define ( ["underscore", "backbone"
             active : 0,
             socket_connection_wait : 5,
             initialize : function(address) {
-                console.log("channel is to be started are we here");
                 socket = null;
                 server_address = address;
                 this.on("CHANNEL_CONNECT", this.openChannel);
@@ -16,6 +15,7 @@ define ( ["underscore", "backbone"
                 this.socketOpen = _.bind(this.socketOpen, this);
                 this.socketError = _.bind(this.socketError, this);
                 this.socketClose = _.bind(this.socketClose, this);
+                console.log("Channel initialized");
             },
             socketOpen : function() {
                 active = 1;
@@ -26,45 +26,40 @@ define ( ["underscore", "backbone"
                 console.log('socketError '+ 'web socket connection error ' + error);
             },
             socketRecv : function(message) {
-                console.log('socketRecv Server: ' + message.data);
-
-                //try {
-                    this.trigger("CHANNEL_RECV", message.data);
-                //} catch (e) {
-                 //   console.log(e.message);
-                //}
+                 console.log('socketRecv Server: ' + message.data);
+                 this.trigger("CHANNEL_RECV", message.data);
             },
             socketClose : function(msg) {
-                active = 0;
-                console.log('socketClose ' + 'web socket is disconnected ' + msg);
+                 active = 0;
+                 console.log('socketClose ' + 'web socket is disconnected ' + msg);
             },
             openChannel: function () {
-                console.log('openChannel ' + 'Opening channel.');
-                socket = new WebSocket('ws://' + server_address + '/join_conf/', ['soap', 'xmpp', 'sip']);
-                socket.binaryType = 'arraybuffer';
-                socket.onopen = this.socketOpen;
-                socket.onclose = this.socketClose;
-                socket.onerror = this.socketError;
-                socket.onmessage = this.socketRecv;
+                 console.log('openChannel ' + 'Opening channel.');
+                 socket = new WebSocket('ws://' + server_address + '/join_conf/');
+                 socket.binaryType = 'arraybuffer';
+                 socket.onopen = this.socketOpen;
+                 socket.onclose = this.socketClose;
+                 socket.onerror = this.socketError;
+                 socket.onmessage = this.socketRecv;
             },
             sendMessage : function (msg) {
-                if(active){
+                 if(active){
                     console.log('sendMessage ' + 'Browser -> Server: ' + msg);
                     socket.send(msg);
-                } else {
+                 } else {
                     if(this.socket_connection_wait){
                         this.socket_connection_wait -= 1;
                         //waiting for connection to get ready
-                        setTimeout( function() { 
-                                    console.log('sendMessage ' + "waiting for connection\n"); 
-                                    sendMessage(msg);
-                                }, 
-                                    1000);
+                        setTimeout( function() {
+                                        console.log('sendMessage ' + "waiting for connection\n");
+                                        sendMessage(msg);
+                                   },
+                                   1000);
                         return;
                     }
                     console.log('sendMessage ' + ' Error: Lost connection with the service. Please check your network setttings.');
                     alert(' Error: Lost connection with the service. Please check your network setttings.');
-                }
+                 }
             }
         
         });

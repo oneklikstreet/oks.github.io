@@ -1,5 +1,5 @@
-define (["underscore", "backbone", "callconstants"
-    ], function(underscore, backbone , callconstants){
+define (["underscore", "backbone", "callconstants"],
+        function(underscore, backbone , callconstants){
     
     var CallState = Backbone.Model.extend({
         defaults: {

@@ -7,22 +7,24 @@ require.config({
         },
        shim: {
            'backbone': {
-           //These script dependencies should be loaded before loading
-           //backbone.js
-           deps: ['underscore', 'jquery'],
-           //Once loaded, use the global 'backbone' as the
-           //module value.
-           exports: 'backbone'
+               /* These script dependencies should be loaded
+               before loading backbone.js */
+               deps: ['underscore', 'jquery'],
+               /* Once loaded, use the global 'backbone' as the
+               module value.*/
+               exports: 'backbone'
            }
         },
         locale: "en"
     });
 
-require([
-    "underscore", "backbone", "channel", "call"
-    ], function ( underscore, backbone, channel, call) {
+require(["underscore", "backbone", "channel", "call"],
+        function ( underscore, backbone, channel, call) {
+
+        console.log("oks mainjs loaded");
 
         var VideoModel = Backbone.Model.extend( {} );
+        
         var localvideo = {};
         localvideo.model = new VideoModel( {
           item_class : "player",
@@ -54,7 +56,6 @@ require([
                 this.$el.html( "Video elements" );
                 $( "#oks-container" ).append( this.el );
             }
-          // attributes
         });
 
         localvideo.view = new VideoView( {
@@ -67,9 +68,10 @@ require([
         //localvideo.view.render();
         remotevideo.view.render();
 
-        console.log("mainjs loaded");
         var message_channel =  Object.create(channel);
         message_channel.initialize("119.81.19.90:8000");
+        console.log("message_channel initialized");
+
         var ourcall = Object.create(call);
         call.initialize(message_channel);
 

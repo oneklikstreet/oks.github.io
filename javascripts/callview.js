@@ -1,5 +1,5 @@
-define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstants", "media"
-    ], function ($,underscore, backbone, webrtc, constraints, callconstants, media) {
+define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstants", "media"],
+       function ($,underscore, backbone, webrtc, constraints, callconstants, media){
 
     Backbone.$ = $;
     makeid = function () {
@@ -16,7 +16,6 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         initialize: function() {
             that = this;
             pc = {};
-            console.log('reached here');
             this.listenTo(this.model, 'IDLE',  this.get_media);
             this.listenTo(this.model, 'ANSWERED', this.setRemote);
             this.localvideo = document.getElementById("localvideo") || null;
@@ -24,6 +23,7 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
             this.from_tag = makeid();
             this.call_id = makeid();
             this.conf_id = "ty1";
+            console.log('CallView initialized');
         },
         get_media : function () {
             call_type = this.model.get('type');
@@ -50,20 +50,19 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
             var video_tracks = stream.getVideoTracks();
             var audio_tracks = stream.getAudioTracks();
             if(audio_tracks === ""){
-                msg = "failed to get mic";
+                msg = "Failed to get access to microphone";
                 //call_events(msg);
                 alert(msg);
             }
             if(video_tracks === "" && mode === VIDEO) {
-                msg = "failed to get camera";
+                msg = "Failed to get access to camera";
                 //call_events(msg);
                 alert(msg);
             }
         },
         setRemote: function(message) {
             pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', 
-                                                                sdp: message.body })
-                                    );
+                                                                sdp: message.body }));
         },    
         onRemoteStreamAdded: function(event) {
             console.log("Remote stream added.");
@@ -76,6 +75,7 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         },
         onIceCandidate: function(event) {
             if (event.candidate) {
+                console.log(event.candidate);
                 if(that.model.currentState() === "IDLE"){
                     //console.log(pc.localDescription.sdp);
                     var invite_msg = JSON.stringify({  "method": "INVITE", 
@@ -87,7 +87,6 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
                                                     });
                     that.trigger("VIEW_CHANGE", invite_msg);
                     that.model.changeState("OFFER_MADE");
-
                 }
             } else {
               console.log("End of candidates.");

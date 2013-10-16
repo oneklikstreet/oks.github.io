@@ -19,10 +19,14 @@ define([], function() {
                     console.log("server->client:" + msg.body)
                 //}
             } else if (msg.code == 502) {
-                console.log(" Error: Unable to connect video/voice. Please check firewall policy on the system or with network service provider");
+                console.log(" Error: Unable to connect video/voice." +
+                            "Please check firewall policy on the system " +
+                            "or with network service provider");
                 hang_up(0);
                 call_state = IDLE;
-                alert(" Error: Unable to connect video/voice. Please check firewall policy on the system or with network service provider");
+                alert(" Error: Unable to connect video/voice. " +
+                      "Please check firewall policy on the system " +
+                      "or with network service provider");
             } else if(msg.code == 430){
                 var size = 0;
                 for (i=0;i<4;i++){       

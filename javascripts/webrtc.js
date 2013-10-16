@@ -17,7 +17,9 @@ define([], function() {
             return this.remoteStreams;
         };
     }
+       
     return {
+       
         webrtcDetectedBrowser : "chrome",
         getUserMedia : navigator.webkitGetUserMedia.bind(navigator),
         attachMediaStream : function(element, stream) {
@@ -35,8 +37,6 @@ define([], function() {
         reattachMediaStream : function(to, from) {
             to.src = from.src;
         }
+       
     }
-
 });
-
-
