@@ -18,8 +18,8 @@ require.config({
         locale: "en"
     });
 
-require(["underscore", "backbone", "channel", "call"],
-        function ( underscore, backbone, channel, call) {
+require(["underscore", "backbone", "channel", "call","callconstants"],
+        function ( underscore, backbone, channel, call, callconstants) {
 
         console.log("oks mainjs loaded");
 
@@ -58,21 +58,21 @@ require(["underscore", "backbone", "channel", "call"],
             }
         });
 
-        localvideo.view = new VideoView( {
+        localvideo.view = new VideoView({
           model : localvideo.model
-        } );
+        });
 
-        remotevideo.view = new VideoView( {
+        remotevideo.view = new VideoView({
           model : remotevideo.model
-        } );
+        });
         //localvideo.view.render();
         remotevideo.view.render();
 
         var message_channel =  Object.create(channel);
-        message_channel.initialize("119.81.19.90:8000");
+        message_channel.initialize("119.81.19.91:8005");
         console.log("message_channel initialized");
 
         var ourcall = Object.create(call);
-        call.initialize(message_channel);
+        call.initialize(message_channel, callconstants.VIDEO);
 
 });

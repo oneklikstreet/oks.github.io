@@ -1,5 +1,5 @@
-define (["constraints", "webrtc"
-  ], function(constraints, webrtc) {
+define (["constraints", "webrtc"],
+        function(constraints, webrtc) {
 
     onUserMediaError = function(error) {
         console.log("Failed to get access to local media. Error code was " + error.code);
@@ -8,8 +8,8 @@ define (["constraints", "webrtc"
     };
 
     return {
-        do_get_user_media: function (enableVideo, onUserMediaSuccess) {
-            // Call into getUserMedia via the polyfill (adapter.js).
+        getLocalDeviceAccess: function (enableVideo, onUserMediaSuccess) {
+            // Need a polyfill here.
             try {
               webrtc.getUserMedia({ 'audio':  true, 
                                     'video':  true }, 
@@ -25,9 +25,7 @@ define (["constraints", "webrtc"
                      + "Please download and use the most secure and fastest browser: Google Chrome." ;
               //call_events( msg + e.message);
               alert(msg);
-
             }
         }
     }
-
 });

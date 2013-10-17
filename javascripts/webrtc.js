@@ -27,7 +27,7 @@ define([], function() {
             console.log("attach media stream " + element.src);
             element.style.display = 'block';
         },
-        deletMediaStream : function(element) {
+        deleteMediaStream : function(element) {
             console.log("delete media stream " + element.src);
             webkitURL.revokeObjectURL(element.src);
             element.pause();

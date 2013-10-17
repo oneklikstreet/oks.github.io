@@ -26,7 +26,7 @@ define (["underscore", "backbone"],
                 console.log('socketError '+ 'web socket connection error ' + error);
             },
             socketRecv : function(message) {
-                 console.log('socketRecv Server: ' + message.data);
+                 //console.log('socketRecv: ' + message.data);
                  this.trigger("CHANNEL_RECV", message.data);
             },
             socketClose : function(msg) {
@@ -44,7 +44,7 @@ define (["underscore", "backbone"],
             },
             sendMessage : function (msg) {
                  if(active){
-                    console.log('sendMessage ' + 'Browser -> Server: ' + msg);
+                    console.log('Browser -> Server: ' + msg);
                     socket.send(msg);
                  } else {
                     if(this.socket_connection_wait){

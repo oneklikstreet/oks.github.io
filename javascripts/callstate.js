@@ -6,6 +6,9 @@ define (["underscore", "backbone", "callconstants"],
             "state": "FAIL",
             "type": callconstants.VIDEO
         },
+        initialize: function(call_type) {
+            this.set("type", call_type);
+        },
         currentState: function() {
             return this.get('state');
         },
@@ -17,13 +20,19 @@ define (["underscore", "backbone", "callconstants"],
             this.set('state', state);
             this.trigger(state, arguments[1]);
         },
-        dial: function(calltype){
-            this.set('type', calltype);
+        dial: function(){
             this.changeState("IDLE");
         },
         answer: function(message){
             this.changeState("ANSWERED", message);
+        },
+        register: function() {
+            this.changeState("REGISTER");
+        },
+        hangup: function() {
+            this.changeState("HANGUP");
         }
+                                    
     }); 
     return CallState;
 });

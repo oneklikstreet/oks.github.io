@@ -16,37 +16,39 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         initialize: function() {
             that = this;
             pc = {};
-            this.listenTo(this.model, 'IDLE',  this.get_media);
+            this.listenTo(this.model, 'REGISTER', this.doRegister);
+            this.listenTo(this.model, 'IDLE',  this.getMedia);
             this.listenTo(this.model, 'ANSWERED', this.setRemote);
+            this.listenTo(this.model, 'HANGUP', this.doCleanup);
             this.localvideo = document.getElementById("localvideo") || null;
             this.remotevideo = document.getElementById("remotevideo") || null;
             this.from_tag = makeid();
             this.call_id = makeid();
-            this.conf_id = "ty1";
+            this.conf_id = "oks1";
             console.log('CallView initialized');
         },
-        get_media : function () {
+        getMedia : function () {
             call_type = this.model.get('type');
             if (call_type === callconstants.VIDEO)
-                this.video();
+                this.doVideo();
             if (call_type === callconstants.VOICE)
-                this.voice();
+                this.doVoice();
             if (call_type === callconstants.AUDIENCE)
-                this.audience();
+                this.doAudience();
         }, 
-        video : function (){
+        doVideo : function (){
             console.log("triggered video");
-            media.do_get_user_media(true, this);
+            media.getLocalDeviceAccess(true, this);
         },
-        voice : function (){
+        doVoice : function (){
             console.log("triggered voice");
-            media.do_get_user_media(false, this);
+            media.getLocalDeviceAccess(false, this);
         },
-        audience : function (){
+        doAudience : function (){
             console.log("triggered audience");
-            media.do_get_user_media(false, this);
+            media.getLocalDeviceAccess(false, this);
         },
-        stream_check: function(stream){
+        doStreamCheck: function(stream){
             var video_tracks = stream.getVideoTracks();
             var audio_tracks = stream.getAudioTracks();
             if(audio_tracks === ""){
@@ -72,6 +74,30 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
         },
         onRemoteStreamRemoved: function(event) {
             console.log("Remote stream removed.");
+        },
+        doCleanup: function(){
+         
+         //{"method":"REGISTER","fromtag":"FsyVc","callid":"sp7Ks","confid":"oks1","user-agent":"browser"}
+         var bye_msg = JSON.stringify({  "method": "HANGUP",
+                                           "fromtag": that.from_tag,
+                                           "callid": that.call_id,
+                                           "confid": that.conf_id,
+                                           "user-agent": "browser"
+                                           });
+         that.trigger("VIEW_CHANGE", bye_msg);
+         
+        },
+        doRegister: function(){
+         
+            //{"method":"REGISTER","fromtag":"FsyVc","callid":"sp7Ks","confid":"oks1","user-agent":"browser"}
+             var register_msg = JSON.stringify({  "method": "REGISTER",
+                                         "fromtag": that.from_tag,
+                                         "callid": that.call_id,
+                                         "confid": that.conf_id,
+                                         "user-agent": "browser"
+                                         });
+             that.trigger("VIEW_CHANGE", register_msg);
+         
         },
         onIceCandidate: function(event) {
             if (event.candidate) {
@@ -99,7 +125,7 @@ define(["jquery","underscore", "backbone", "webrtc", "constraints", "callconstan
             pc.setLocalDescription(sessionDescription);
         },
         createPeerConnection: function(stream) {
-            that.stream_check(stream);
+            that.doStreamCheck(stream);
             console.log("User has granted access to local media.");
             if (that.localvideo !== null)
                 webrtc.attachMediaStream(that.localvideo, stream);
